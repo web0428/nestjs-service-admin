@@ -4,11 +4,12 @@ import { Response } from 'express'
 import { extname } from 'path';
 import { createReadStream } from 'fs';
 import { UploadService } from './upload.service';
+import config from 'config';
 const multer = require('multer')
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, '/Users/liuruilin/Desktop/upload/')
+    cb(null, config.UPLOAD_FILE_PATH)
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9) + extname(file.originalname)
@@ -18,7 +19,9 @@ const storage = multer.diskStorage({
 
 @Controller('upload')
 export class UploadController {
-  constructor(private readonly uploadService: UploadService) { }
+  constructor(private readonly uploadService: UploadService) {
+
+  }
 
   @Post()
   @UseInterceptors(FileInterceptor('file', { storage }))
@@ -29,7 +32,7 @@ export class UploadController {
   @Get(':id')
   async readFile(@Res() res: Response, @Param('id') id: string) {
     const { filename } = await this.uploadService.findOne(id);
-    const file = createReadStream(`/Users/liuruilin/Desktop/upload/${filename}`)
+    const file = createReadStream(`${config.UPLOAD_FILE_PATH + filename}`)
     file.pipe(res);
   }
 }

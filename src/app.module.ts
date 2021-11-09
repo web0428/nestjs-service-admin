@@ -16,7 +16,8 @@ import { UploadModule } from './upload/upload.module';
       synchronize: true,
     }),
     UserModule,
-    UploadModule,
-  ]
+    UploadModule
+  ],
 })
-export class AppModule { }
+export class AppModule {
+}

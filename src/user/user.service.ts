@@ -31,13 +31,17 @@ export class UserService {
     }
   }
 
-  async findAll() {
+  async findAll(querys) {
     try {
-      const result = await this.usersRepository.find();
+      querys.order = { "updatedDate": "DESC" }
+      const result = await this.usersRepository.find(querys);
+      const total = await this.usersRepository.count();
       const resdata: ResData = {
         code: Status.SUCCESS,
         msg: '查询成功',
-        content: result
+        content: {
+          result, total
+        }
       };
       return resdata;
     } catch (e) {
@@ -101,5 +105,9 @@ export class UserService {
       };
       return resdata;
     }
+  }
+
+  async login(createUserDto: CreateUserDto) {
+    return await this.usersRepository.findOne(createUserDto)
   }
 }
