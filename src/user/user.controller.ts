@@ -13,25 +13,21 @@ export class UserController {
   @UseGuards(AuthGuard('local'))
   @Post('/login')
   async login(@Request() req) {
+    const user = req.user;
+    user.access_token = await (await this.authService.login(req.user)).access_token
     const resdata: ResData = {
       code: Status.SUCCESS,
       msg: '登录成功',
-      content: await this.authService.login(req.user)
+      content: user
     };
     return resdata;
-  }
-
-  @UseGuards(AuthGuard('jwt'))
-  @Get('profile')
-  getProfile(@Request() req) {
-    return req.user;
   }
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
-  
+
   @UseGuards(AuthGuard('jwt'))
   @Get()
   findAll(@Query() querys) {

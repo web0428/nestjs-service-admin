@@ -9,17 +9,16 @@ import UploadFile from './entities/upload-file.entity';
 export class UploadService {
   constructor(@InjectRepository(UploadFile) private uploadFileRepository: Repository<UploadFile>) { }
 
-  upload(file) {
+  async upload(file) {
     const newfile = {
-      id: uuidv4(),
       originalname: file.originalname,
       filename: file.filename
     }
-    this.uploadFileRepository.save(newfile)
+    const result = await this.uploadFileRepository.save(newfile)
     const resdata: ResData = {
       code: Status.SUCCESS,
       msg: '保存成功',
-      content: newfile.id
+      content: result.id
     };
     return resdata;
   }

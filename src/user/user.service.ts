@@ -13,7 +13,6 @@ export class UserService {
   constructor(@InjectRepository(User) private usersRepository: Repository<User>) { }
 
   async create(createUserDto: CreateUserDto) {
-    createUserDto.id = uuidv4();
     try {
       const result = await this.usersRepository.save(createUserDto);
       const resdata: ResData = {
@@ -33,14 +32,20 @@ export class UserService {
 
   async findAll(querys) {
     try {
-      querys.order = { "updatedDate": "DESC" }
-      const result = await this.usersRepository.find(querys);
-      const total = await this.usersRepository.count();
+      const { startTime, endTime } = querys;
+      let sql = this.usersRepository.createQueryBuilder("user").where('user.username like :username', { username: `%${querys.username}%` })
+      if (startTime) {
+        sql.andWhere('user.createdDate between :startTime and :endTime', { startTime, endTime })
+      }
+      const result = await sql.skip(querys.skip).take(querys.take).orderBy("updatedDate", "DESC").getManyAndCount()
+
+      const [users, total] = result
       const resdata: ResData = {
         code: Status.SUCCESS,
         msg: '查询成功',
         content: {
-          result, total
+          result: users,
+          total
         }
       };
       return resdata;
