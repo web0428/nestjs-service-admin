@@ -13,16 +13,17 @@ export class UserService {
   constructor(@InjectRepository(User) private usersRepository: Repository<User>) { }
 
   async create(createUserDto: CreateUserDto) {
+    let resdata: ResData;
     try {
       const result = await this.usersRepository.save(createUserDto);
-      const resdata: ResData = {
+      resdata = {
         code: Status.SUCCESS,
         msg: '保存成功',
         content: result
       };
       return resdata;
     } catch (e) {
-      const resdata: ResData = {
+      resdata = {
         code: Status.ERROR,
         msg: e,
       };
@@ -31,16 +32,20 @@ export class UserService {
   }
 
   async findAll(querys) {
+    let resdata: ResData;
     try {
-      const { startTime, endTime } = querys;
-      let sql = this.usersRepository.createQueryBuilder("user").where('user.username like :username', { username: `%${querys.username}%` })
+      const { startTime, endTime, username } = querys;
+      let sql = this.usersRepository.createQueryBuilder("user");
+      if (username) {
+        sql.where('user.username like :username', { username: `%${querys.username}%` });
+      }
       if (startTime) {
         sql.andWhere('user.createdDate between :startTime and :endTime', { startTime, endTime })
       }
       const result = await sql.skip(querys.skip).take(querys.take).orderBy("updatedDate", "DESC").getManyAndCount()
 
       const [users, total] = result
-      const resdata: ResData = {
+      resdata = {
         code: Status.SUCCESS,
         msg: '查询成功',
         content: {
@@ -50,7 +55,7 @@ export class UserService {
       };
       return resdata;
     } catch (e) {
-      const resdata: ResData = {
+      resdata = {
         code: Status.ERROR,
         msg: e,
       };
@@ -59,16 +64,17 @@ export class UserService {
   }
 
   async findOne(id: string) {
+    let resdata: ResData;
     try {
       const result = await this.usersRepository.findOne(id);
-      const resdata: ResData = {
+      resdata = {
         code: Status.SUCCESS,
         msg: '查询成功',
         content: result
       };
       return resdata;
     } catch (e) {
-      const resdata: ResData = {
+      resdata = {
         code: Status.ERROR,
         msg: e,
       };
@@ -77,16 +83,17 @@ export class UserService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
+    let resdata: ResData;
     try {
       const result = await this.usersRepository.update(id, updateUserDto);
-      const resdata: ResData = {
+      resdata = {
         code: Status.SUCCESS,
         msg: '更新成功',
         content: result
       };
       return resdata;
     } catch (e) {
-      const resdata: ResData = {
+      resdata = {
         code: Status.ERROR,
         msg: e,
       };
@@ -95,16 +102,17 @@ export class UserService {
   }
 
   async remove(id: string) {
+    let resdata: ResData;
     try {
       const result = await this.usersRepository.delete(id);
-      const resdata: ResData = {
+      resdata = {
         code: Status.SUCCESS,
         msg: '删除成功',
         content: result
       };
       return resdata;
     } catch (e) {
-      const resdata: ResData = {
+      resdata = {
         code: Status.ERROR,
         msg: e,
       };

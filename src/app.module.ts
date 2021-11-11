@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { UploadModule } from './upload/upload.module';
+import { CustomTableModule } from './custom-table/custom-table.module';
 
 @Module({
   imports: [
@@ -16,7 +17,8 @@ import { UploadModule } from './upload/upload.module';
       synchronize: true,
     }),
     UserModule,
-    UploadModule
+    UploadModule,
+    CustomTableModule
   ],
 })
 export class AppModule {
