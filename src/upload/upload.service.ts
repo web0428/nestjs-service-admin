@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ResData, Status } from 'src/response/res-data.interface';
 import { Repository } from 'typeorm';
-import { v4 as uuidv4 } from 'uuid';
 import UploadFile from './entities/upload-file.entity';
 
 @Injectable()

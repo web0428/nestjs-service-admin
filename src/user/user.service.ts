@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import User from './entities/user.entity';
-import { v4 as uuidv4 } from 'uuid';
 import { ResData, Status } from 'src/response/res-data.interface';
 
 @Injectable()

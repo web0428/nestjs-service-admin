@@ -134,7 +134,7 @@ export class CustomTableService {
         return {
           name: field.fieldName,
           type: 'varchar',
-          comments: field.fieldCnName
+          comment: field.fieldCnName
         }
       })
       const queryRunner = this.connection.createQueryRunner();
@@ -171,10 +171,11 @@ export class CustomTableService {
     let resdata: ResData;
     try {
       const result = await queryRunner.query(`select * from ${tableName}`)
+      const fields = await queryRunner.query(`SHOW FULL COLUMNS  FROM ${tableName}`)
       resdata = {
         code: Status.SUCCESS,
         msg: '查询成功',
-        content: result
+        content: { result, fields }
       };
       return resdata;
     } catch (e) {
